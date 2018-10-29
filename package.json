@@ -26,6 +26,7 @@
     "@clr/icons": "^0.13.7",
     "@clr/ui": "^0.13.7",
     "@webcomponents/custom-elements": "^1.0.0",
+    "array-join": "^2.3.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
     "connect-timeout": "^1.9.0",

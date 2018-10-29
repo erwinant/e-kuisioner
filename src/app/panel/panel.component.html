@@ -1,0 +1,28 @@
+<div class="card">
+  <div class="card-block">
+    <div *ngFor="let q of qs">
+      <div class="card-title">
+        <span *ngIf="parentNumber" class="parentnumbering">{{parentNumber}}</span><span class="qnumbering">{{q.OrderDesc}}.
+        </span>{{q.QText}}
+      </div>
+      <div class="card-text">
+        <textarea [(ngModel)]="q.Answer" name="description"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer">
+    <button class="btn btn-md btn-primary" (click)="sendAction(1)" *ngIf="!firstQ">Sebelumnya</button>
+    <button class="btn btn-md btn-primary" (click)="sendAction(2)" *ngIf="!lastQ">Selanjutnya</button>
+    <button class="btn btn-md btn-success" (click)="sendAction(3)" *ngIf="lastQ">Selesai</button>
+  </div>
+  <div class="block" *ngIf="qs.length == 0">
+    <div style="text-align: center;">
+      <span class="spinner spinner-inline">
+        Loading...
+      </span>
+      <span>
+        Loading...
+      </span>
+    </div>
+  </div>
+</div>

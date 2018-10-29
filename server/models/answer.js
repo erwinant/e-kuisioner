@@ -28,7 +28,7 @@ exports.insertAnswer = function (Answer, done) {
     var values = [Answer.QCode, Answer.Answer, Answer.Username]
     db.get(db.trx, function (err, connection) {
         if (err) return done('Database problem')
-        connection.query('CALL sp_AnswerIn(?,?)', values, function (err, result) {
+        connection.query('CALL sp_AnswerIn(?,?,?)', values, function (err, result) {
             connection.release();
             if (err) return done(err)
             done(null, result[0])

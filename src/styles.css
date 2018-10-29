@@ -1,1 +1,11 @@
-/* You can add global styles to this file, and also import other style files */
+.btn-primary{
+    background: #005586 !important;
+}
+
+.btn-success{
+    background: #8AC43F !important;
+}
+
+.clr-row{
+    margin:0 !important;
+}

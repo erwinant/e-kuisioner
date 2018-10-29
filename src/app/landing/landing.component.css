@@ -1,0 +1,4 @@
+.box{
+    height: calc(100vh - 0px);
+    background-image: linear-gradient( 108.7deg,  rgba(224,235,213,1) 8.1%, rgba(37,148,141,1) 91.2% );
+}
