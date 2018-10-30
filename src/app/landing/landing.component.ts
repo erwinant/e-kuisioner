@@ -18,9 +18,10 @@ export class LandingComponent implements OnInit {
   constructor(private xhrService:XhrserviceService) { }
 
   ngOnInit() {
-    this.xhrService.getAllQuestions("ADMEDIKA").subscribe(r =>{
+    let companyCode:string = localStorage.get("currentUserCompany");
+    this.xhrService.getAllQuestions(companyCode).subscribe(r =>{
       this.username = localStorage.getItem("currentUser");
-      this.listQuestion = r.filter(f => f.ParentQCode === "-");
+      this.listQuestion = r.filter(f => f.ParentQCode === "-");2
       this.currentQuestion = this.listQuestion[0];
       this.firstQ = true;
     })
@@ -50,7 +51,7 @@ export class LandingComponent implements OnInit {
 
     if($event === 3){
       this.openedDialog = true;
-      //this.saveDone();
+      this.saveDone();
     }
   }
 

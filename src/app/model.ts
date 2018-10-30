@@ -11,8 +11,8 @@ export class Question {
     Status: number;
     QCode: string;
     ParentQCode: string;
-    OrderDesc: string;
-    QText: string;
+    OrderDesc: string="";
+    QText: string="";
     CompanyCode: string;
     Answer:string="";
 }
@@ -31,5 +31,5 @@ export class User {
     Password:string;
     LastLogin:string;
     CompanyCode:string;
-    IsAdmin:string;
+    IsAdmin:number;
 }

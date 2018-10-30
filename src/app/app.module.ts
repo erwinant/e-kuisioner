@@ -14,6 +14,7 @@ import { PanelComponent } from './panel/panel.component';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { AnswerfPipe } from './pipes/answerf.pipe';
+import { EditorComponent } from './editor/editor.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { AnswerfPipe } from './pipes/answerf.pipe';
     LandingComponent,
     PanelComponent,
     AnswerfPipe,
+    EditorComponent,
     
   ],
   imports: [
