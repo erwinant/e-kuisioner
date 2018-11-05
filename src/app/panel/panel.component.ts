@@ -51,6 +51,7 @@ export class PanelComponent implements OnInit, OnChanges {
   }
 
   sendAction(isNext: number) {
+    console.log(this.qs);
     this.qs.forEach(el =>{
       let answer:Answer = new Answer();
       answer.Answer = el.Answer;
@@ -59,7 +60,7 @@ export class PanelComponent implements OnInit, OnChanges {
       answer.Username = this.username;
       
       this.xhrService.getAnswer(el.QCode, this.username).subscribe(r =>{
-
+        
         if(r) //update
         {
           r.Answer = el.Answer;
@@ -67,8 +68,9 @@ export class PanelComponent implements OnInit, OnChanges {
             console.log(up);
           });
         }else{ //insert
+          console.log(answer);
           this.xhrService.postAnswer(answer).subscribe(add => {
-            console.log(add);
+            console.log("add");
           });
         }
       })

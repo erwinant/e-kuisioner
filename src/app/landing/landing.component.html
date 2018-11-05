@@ -1,12 +1,13 @@
 <div class="clr-row clr-align-items-center box">
   <div class="clr-col-1 clr-col-md-2"></div>
   <div class="clr-col-10 clr-col-md-8">
+    <img src="../../assets/img/Logo-Experd.png" /> <span style="color: #000;font-size:22px;">Questioner</span>
     <app-panel *ngIf="currentQuestion.QCode" [username]="username" [firstQ]="firstQ" [lastQ]="lastQ" [qsCode]="currentQuestion.QCode"
       (actionEvent)="receiveAction($event)"></app-panel>
-      <div *ngIf="!currentQuestion.QCode">
-        <h3>Saat ini data sudah tersedia.</h3>
-        <h3>Terima kasih atas partisipasi Anda!</h3>
-      </div>
+    <div *ngIf="!currentQuestion.QCode">
+      <h3>Saat ini data sudah tersedia.</h3>
+      <h3>Terima kasih atas partisipasi Anda!</h3>
+    </div>
   </div>
   <div class="clr-col-1 clr-col-md-2"></div>
 </div>

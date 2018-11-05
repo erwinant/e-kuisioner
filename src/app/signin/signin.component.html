@@ -1,9 +1,12 @@
 <div class="clr-row clr-align-items-center box">
   <div class="clr-col">
+    <img src="../../assets/img/Logo-Experd.png" /><br/>
     <h1 *ngIf="errorDirectAccess">
+      
       <clr-icon size="33" shape="warning-standard" class="is-solid"></clr-icon> {{errorDirectAccess}}!
     </h1>
     <p *ngIf="errorDirectAccess" class="p1">Please visit <a href="https://assessment.experd.com">https://assessment.experd.com</a></p>
-    <button *ngIf="!errorDirectAccess" class="btn btn-primary" (click)="sign()">Mulai</button>
+    <p *ngIf="!errorDirectAccess" class="p1">Anytime when you ready!</p>
+    <button *ngIf="!errorDirectAccess" class="btn btn-primary" (click)="sign()">Start </button>
   </div>
 </div>

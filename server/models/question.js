@@ -48,11 +48,23 @@ exports.updateQuestion = function (key,Question, done) {
     })
 }
 
-exports.deleteQuestion = function (key1, key2, done) {
-    var values = [key1, key2]
+exports.deleteQuestion = function (key1, done) {
+    var values = [key1]
     db.get(db.trx, function (err, connection) {
         if (err) return done('Database problem')
         connection.query('DELETE FROM Question WHERE QCode=?', values, function (err, result) {
+            connection.release();
+            if (err) return done(err)
+            done(null, result)
+        })
+    })
+}
+
+exports.deleteAllQuestion = function (key1, done) {
+    var values = [key1]
+    db.get(db.trx, function (err, connection) {
+        if (err) return done('Database problem')
+        connection.query('DELETE FROM Question WHERE CompanyCode=?', values, function (err, result) {
             connection.release();
             if (err) return done(err)
             done(null, result)

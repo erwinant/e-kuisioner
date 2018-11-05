@@ -1,45 +1,146 @@
-<div class="clr-row">
+<div class="alert alert-app-level alert-success" style="position:absolute;width:30%; bottom:0;left:calc( 50% - 15% );"
+  role="alert" *ngIf="showSuccess">
+  <div class="alert-items">
+    <div class="alert-item static">
+      <div class="alert-icon-wrapper">
+        <clr-icon class="alert-icon" shape="check-circle"></clr-icon>
+      </div>
+      <span class="alert-text">Data tersimpan</span>
+    </div>
+  </div>
+</div>
+<div class="alert alert-app-level alert-danger" style="position:absolute;width:30%; bottom:0;left:calc( 50% - 15% );"
+  role="alert" *ngIf="showError">
+  <div class="alert-items">
+    <div class="alert-item static">
+      <div class="alert-icon-wrapper">
+        <clr-icon class="alert-icon" shape="check-circle"></clr-icon>
+      </div>
+      <span class="alert-text">Duplicate number {{duplicateNumber}}</span>
+    </div>
+  </div>
+</div>
+<div class="clr-row box">
   <div class="clr-col-1">
 
   </div>
   <div class="clr-col-10 content">
-    <div class="title">
-      <h2>Kuisioner Editor</h2>
-    </div>
-    <div class="cform">
-      <input type="text" [value]="selectedCompany" id="basic" placeholder="Project" class="clr-input" (input)="onSearchChange($event.target.value)">
-      <div *ngIf='filteredCompany' class="span-list">
-        <ul style="list-style-type: none;">
-          <li *ngFor="let item of filteredCompany" style="cursor: pointer;" (click)="onSelectCompany(item.CompanyCode)">
-            {{item.CompanyName}}
-          </li>
-        </ul>
+    <div class="card">
+      <div class="card-header">
+         <img src="../../assets/img/Logo-Experd.png"/>  Questioner Editor
       </div>
-      <br />
-      <div class="questions" *ngIf="listQuestion.length>0">
-        <div class="clr-row clr-align-items-center" *ngFor="let q of listQuestion;let i = index">
-          <div class="clr-col-1">
-            <input [style.text-align]="isNumber(q.OrderDesc) ? 'left':'right'" style="font-size: 28px;" [(ngModel)]="q.OrderDesc"
-              type="text" id="basic" placeholder="No" class="clr-input">
+      <div class="card-block">
+        <div class="cform">
+          <div class="clr-row">
+            <div class="clr-col-6">
+              <input type="text" [value]="selectedCompany" id="basic" placeholder="Project" class="clr-input" (input)="onSearchChange('1',$event.target.value)">
+              <div *ngIf='filteredCompany' class="span-list">
+                <ul style="list-style-type: none;">
+                  <li *ngFor="let item of filteredCompany" style="cursor: pointer;" (click)="onSelectCompany('1', item.CompanyCode)">
+                    {{item.CompanyName}}
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="clr-col-6" style="border:1px solid #000;">
+              For new client, you can copy questioner from<button (click)="copyMode = true;" class="btn btn-sm btn-link">existing
+                company</button>
+            </div>
           </div>
-          <div class="clr-col-8" style="margin-top:7px;">
-            <textarea rows="1" [(ngModel)]="q.QText" placeholder="Question or leave it blank if this treat as parent"></textarea>
-          </div>
-          <div class="clr-col-2">
-              <button type="button" class="btn btn-icon  btn-danger" style="margin-right:5px;">
+          <br />
+          <div class="questions" *ngIf="listQuestion.length>0">
+            <div class="clr-row clr-align-items-center" *ngFor="let q of listQuestion;let i = index">
+              <div class="clr-col-1">
+                <input [style.text-align]="isNumber(q.OrderDesc) ? 'left':'right'" style="font-size: 26px;" [(ngModel)]="q.OrderDesc"
+                  type="text" id="basic" placeholder="No" class="clr-input">
+              </div>
+              <div class="clr-col-8" style="margin-top:7px;">
+                <textarea rows="1" [(ngModel)]="q.QText" placeholder="Question or leave it blank if this treat as parent"></textarea>
+              </div>
+              <div class="clr-col-2">
+                <button (click)="delConfirm(q,i)" type="button" class="btn btn-icon  btn-danger" style="margin-right:5px;">
                   <clr-icon shape="trash" class="is-solid"></clr-icon>
-              </button>
-              <button (click)="addQuestion()" *ngIf="i===listQuestion.length-1" type="button" class="btn btn-icon btn-success" style="margin:0;">
+                </button>
+                <button (click)="addQuestion()" *ngIf="i===listQuestion.length-1" type="button" class="btn btn-icon btn-success"
+                  style="margin:0;">
                   <clr-icon shape="plus" class="is-solid"></clr-icon>
-              </button>
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
 
+        </div>
+      </div>
+      <div class="card-footer">
+        <button *ngIf="listQuestion.length>0  && !lock" class="btn btn-success btn-block" (click)="saveQuestions()">
+          <clr-icon shape="floppy"></clr-icon> Save all
+        </button>
       </div>
 
     </div>
-    <button class="btn btn-success btn-block" (click)="saveQuestions()"><clr-icon shape="floppy"></clr-icon> Save all</button>
-  </div>
-  <div class="clr-col-1">
+    <div class="clr-col-1">
+    </div>
   </div>
 </div>
+
+<div class="block" *ngIf="lock">
+  <div style="text-align: center;">
+    <span class="spinner spinner-inline">
+      Loading...
+    </span>
+    <span>
+      Loading...
+    </span>
+  </div>
+</div>
+
+<clr-modal [(clrModalOpen)]="copyMode">
+
+  <h3 class="modal-title">Copy questions<br /></h3>
+  <div class="modal-body" style="min-height:200px;">
+
+    <span style="background: salmon;padding:3px;border: 1px #ff0000 solid;color:#fff;">
+      <clr-icon shape="exclamation-triangle" size="20"></clr-icon> {{copyError}}
+    </span>
+    <div class="clr-row">
+      <div class="clr-col-5">
+        <input type="text" [value]="selectedCompanySource" id="basic" placeholder="Project" class="clr-input" (input)="onSearchChange('2',$event.target.value)">
+        <div *ngIf='filteredCompanySource' class="span-list">
+          <ul style="list-style-type: none;">
+            <li *ngFor="let item of filteredCompanySource" style="cursor: pointer;" (click)="onSelectCompany('2',item.CompanyCode)">
+              {{item.CompanyName}}
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="clr-col-2" style="margin-top:20px;">
+        Copy to
+      </div>
+      <div class="clr-col-5">
+        <input type="text" [value]="selectedCompanyTarget" id="basic" placeholder="Project" class="clr-input" (input)="onSearchChange('3',$event.target.value)">
+        <div *ngIf='filteredCompanyTarget' class="span-list">
+          <ul style="list-style-type: none;">
+            <li *ngFor="let item of filteredCompanyTarget" style="cursor: pointer;" (click)="onSelectCompany('3',item.CompanyCode)">
+              {{item.CompanyName}}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="copyMode = false">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="copyData()">Ok</button>
+  </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="deleteConfirm" [clrModalSize]="'sm'">
+  <h3 class="modal-title">Confirmation</h3>
+  <div class="modal-body">
+    <p>Sure want to delete it?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="delCancel()">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="delQuestion()">Ok</button>
+  </div>
+</clr-modal>

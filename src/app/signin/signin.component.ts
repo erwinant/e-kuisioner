@@ -13,7 +13,7 @@ export class SigninComponent implements OnInit {
   constructor(private router: Router, private route: ActivatedRoute, private xhrService: XhrserviceService) { }
 
   ngOnInit() {
-
+    localStorage.clear();
     this.route.queryParams.pipe().subscribe(params => {
       if (params.e) {
         this.xhrService.getUser(params.e).subscribe(r => {
@@ -21,21 +21,15 @@ export class SigninComponent implements OnInit {
             if (r.IsAdmin === 1) {
               this.router.navigate(['/editor']);
             } else {
-              if (localStorage.getItem('currentUser')) {
-                if (localStorage.getItem('currentUser') === params.e)
                   this.router.navigate(['/landing']);
-              }
             }
           }
         });
-
 
       } else {
         this.errorDirectAccess = "Direct access content not allowed";
       }
     });
-
-
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 

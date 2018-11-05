@@ -57,7 +57,7 @@ export class XhrserviceService {
 
 
   postAnswer(answer: Answer) {
-    this.token = localStorage.getItem('currentUser');
+    this.token = answer.Username;
     //const headers = this._headers.append('x-access-token', this.token.token);
     const headers = this._headers.append('x-access-token', this.token);
     let url = globalVar.global_api + "/an";
@@ -93,7 +93,7 @@ export class XhrserviceService {
     //const headers = this._headers.append('x-access-token', this.token.token);
     const headers = this._headers.append('x-access-token', this.token);
     let url = globalVar.global_api + "/qs";
-    return this.httpClient.post<Question[]>(url, qs, { headers: headers }).pipe(map(res => { return res; }));
+    return this.httpClient.post<Question>(url, qs, { headers: headers }).pipe(map(res => { return res[0]; }));
   }
 
   putQuestion(qs: Question) {
@@ -101,6 +101,22 @@ export class XhrserviceService {
     //const headers = this._headers.append('x-access-token', this.token.token);
     const headers = this._headers.append('x-access-token', this.token);
     let url = globalVar.global_api + "/qs";
-    return this.httpClient.put<Question[]>(url + "/" + qs.QCode , qs, { headers: headers }).pipe(map(res => { return res; }));
+    return this.httpClient.put<Question>(url + "/" + qs.QCode , qs, { headers: headers }).pipe(map(res => { return res; }));
+  }
+
+  delQuestion(qs: Question) {
+    this.token = localStorage.getItem('currentUser');
+    //const headers = this._headers.append('x-access-token', this.token.token);
+    const headers = this._headers.append('x-access-token', this.token);
+    let url = globalVar.global_api + "/qs";
+    return this.httpClient.delete<Question>(url + "/" + qs.QCode, { headers: headers }).pipe(map(res => { return res; }));
+  }
+
+  delAllQuestion(companyCode: string) {
+    this.token = localStorage.getItem('currentUser');
+    //const headers = this._headers.append('x-access-token', this.token.token);
+    const headers = this._headers.append('x-access-token', this.token);
+    let url = globalVar.global_api + "/qsall";
+    return this.httpClient.delete<Question>(url + "/" + companyCode, { headers: headers }).pipe(map(res => { return res; }));
   }
 }

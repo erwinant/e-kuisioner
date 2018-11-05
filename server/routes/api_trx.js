@@ -120,6 +120,13 @@ router.delete('/qs/:key', function (req, res, next) {
     });
 });
 
+router.delete('/qsall/:key', function (req, res, next) {
+    qs.deleteAllQuestion(req.params.key, function (err, rows) {
+        if (err) { res.json(err); }
+        else { res.json(rows); }
+    });
+});
+
 //region company
 router.get('/cp', function (req, res, next) {
     cp.getAllCompany(function (err, rows) {

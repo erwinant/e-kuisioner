@@ -18,13 +18,13 @@ export class LandingComponent implements OnInit {
   constructor(private xhrService:XhrserviceService) { }
 
   ngOnInit() {
-    let companyCode:string = localStorage.get("currentUserCompany");
+    let companyCode:any = localStorage.getItem("currentUserCompany");
     this.xhrService.getAllQuestions(companyCode).subscribe(r =>{
       this.username = localStorage.getItem("currentUser");
       this.listQuestion = r.filter(f => f.ParentQCode === "-");2
       this.currentQuestion = this.listQuestion[0];
       this.firstQ = true;
-    })
+    });
   }
 
   receiveAction($event) {
@@ -56,6 +56,6 @@ export class LandingComponent implements OnInit {
   }
 
   saveDone(){
-    localStorage.removeItem("currentUser");
+    localStorage.clear();
   }
 }

@@ -8,13 +8,14 @@ export class Answer {
 
 export class Question {
     Id: number;
-    Status: number;
+    Status: number=1;
     QCode: string;
     ParentQCode: string;
     OrderDesc: string="";
     QText: string="";
     CompanyCode: string;
     Answer:string="";
+    FakeParentQCode:string="";
 }
 
 export class Company {

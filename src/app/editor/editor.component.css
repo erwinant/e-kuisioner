@@ -1,23 +1,49 @@
-.content input{
-    width: 100%;
-    min-height: 50%;
-    margin-top: 20px;
-}
+ input {
+     width: 100%;
+     min-height: 50%;
+     margin-top: 20px;
+ }
 
-.span-list{
-    border:#ccc 1px solid;
-}
+ .span-list {
+     border: #ccc 1px solid;
+     position: absolute;
+ }
 
-.content li{
-    background: #fff;
-    padding: 5px;
-}
+ li {
+     background: #fff;
+     padding: 5px;
+ }
 
-.content li:hover{
-    background: #8AC43F;
-    color:#fff;
-}
+ li:hover {
+     background: #8AC43F;
+     color: #fff;
+ }
+ .questions {
+    background-image: linear-gradient(to right, #cfd9df 0%, #e2ebf0 100%);
+    border-radius: 8px;
+ }
+ .questions div {
+    
+ }
 
-.questions div{
-    background: rgb(189, 228, 139);
-}
+ .box {
+     min-height: calc(100vh - 0px);
+     background-color: #ffffff;
+background-image: url("https://www.transparenttextures.com/patterns/batthern.png");
+/* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
+ }
+
+ .block {
+     z-index: 999999;
+     position: absolute;
+     background: rgba(255, 255, 255, 0.733);
+     min-height: 100%;
+     width: 100%;
+     padding-top: 20%;
+     top: 0;
+ }
+
+
+ .copyRegion {
+     min-height: 200px;
+ }
