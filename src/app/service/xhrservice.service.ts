@@ -23,6 +23,14 @@ export class XhrserviceService {
     return this.httpClient.post<Question[]>(url, { CompanyCode: companyCode }, { headers: headers }).pipe(map(res => { return res; }));
   }
 
+  getReport(projectCode: string, email:string) {
+    this.token = localStorage.getItem('currentUser');
+    //const headers = this._headers.append('x-access-token', this.token.token);
+    const headers = this._headers.append('x-access-token', this.token);
+    let url = globalVar.global_api + "/reports/"+projectCode+"/"+email;
+    return this.httpClient.get(url,  { headers: headers }).pipe(map(res => { return res; }));
+  }
+
   getQuestion(qCode: string): Observable<Question[]> {
     this.token = localStorage.getItem('currentUser');
     //const headers = this._headers.append('x-access-token', this.token.token);

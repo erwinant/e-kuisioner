@@ -72,9 +72,15 @@
         </div>
       </div>
       <div class="card-footer">
-        <button *ngIf="listQuestion.length>0  && !lock" class="btn btn-success btn-block" (click)="saveQuestions()">
+        <button *ngIf="listQuestion.length>0  && !lock" class="btn btn-success" (click)="saveQuestions()">
           <clr-icon shape="floppy"></clr-icon> Save all
         </button>
+        <button *ngIf="listQuestion.length>0  && !lock" class="btn btn-primary" (click)="export();reportSend=true;">
+          <clr-icon shape="export"></clr-icon> Export Report
+        </button>
+        <span *ngIf="reportSend" (click)="reportSend=false;">
+          <clr-icon shape="check"></clr-icon> Report sudah dikirimkan ke email
+        </span>
       </div>
 
     </div>

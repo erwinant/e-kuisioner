@@ -5,6 +5,10 @@ var cp = require('../models/company');
 
 var express = require('express');
 var router = express.Router();
+var fs = require('fs');
+const pug = require('pug');
+var pdf = require('html-pdf');
+const async = require('async');
 
 //region user
 router.get('/us', function (req, res, next) {
@@ -69,7 +73,7 @@ router.post('/an/', function (req, res, next) {
 });
 
 router.put('/an/:key1/:key2', function (req, res, next) {
-    an.updateAnswer(req.params.key1,req.params.key2, req.body, function (err, rows) {
+    an.updateAnswer(req.params.key1, req.params.key2, req.body, function (err, rows) {
         if (err) { res.json(err); }
         else { res.json(rows); }
     });
@@ -164,5 +168,105 @@ router.delete('/cp/:key', function (req, res, next) {
         else { res.json(rows); }
     });
 });
+
+router.get('/reportview', function (req, res) {
+    const compiledFunction = pug.compileFile('server/views/index.pug');
+    an.rpt("erwin.ant@gmail.com", "ADMEDIKA", (err, rows) => {
+        res.render('index', { rows });
+    });
+});
+
+
+router.get('/reports/:key1/:key2', function (req, res) {
+
+    if (req.params.key1) {
+        deletePdfFolder('server/views/pdf');
+        us.getAllUserByCriteria({ CompanyCode: req.params.key1 }, (err1, users) => {
+			
+            async.eachSeries(users, (user, callback) => {
+                renderPdf(user.Username, req.params.key1, (msg) => {
+                    callback();
+                })
+            }, (err) => {
+                var zipFolder = require('zip-folder');
+                zipFolder('server/views/pdf', 'server/views/pdf.zip', (errZip) => {
+                    if (errZip) {
+                        console.log('oh no!', errZip);
+                    } else {
+                        var email = require("emailjs");
+                        var server = email.server.connect({
+                            user: "erwin.ant@experd.com",
+                            password: "Sunter123",
+                            host: "smtp.gmail.com",
+                            ssl: true,
+							port : 465,
+                            timeout: 60000
+                        });
+
+                        // send the message and get a callback with an error or details of the message that was sent
+                        server.send({
+                            text: "Berikut data ECQ Project "+req.params.key1,
+                            from: "ECQ Reporter <itsupport@experd.com>",
+                            to: req.params.key2,
+                            subject: "ECQ Reporter",
+                            attachment:
+                                [
+                                    { data: "Berikut data ECQ Project "+req.params.key1, alternative: true },
+                                    { path:"server/views/pdf.zip", type:"application/zip", name:"pdf.zip"}
+                                ]
+                        }, function (err, message) {
+                            //console.log(err || message);
+                            if (err) { res.json(err); }
+                            else { res.send("Report telah dikirim ke email "+req.params.key2); }
+                        });
+                    }
+                });
+
+            });
+        });
+    }
+    else
+        res.send("What are you looking?");
+});
+
+function deletePdfFolder(path) {
+    if (fs.existsSync(path)) {
+        fs.readdirSync(path).forEach(function (file) {
+            var curPath = path + "/" + file;
+            if (fs.statSync(curPath).isDirectory()) { // recurse
+                deleteFolderRecursive(curPath);
+            } else { // delete file
+                fs.unlinkSync(curPath);
+            }
+        });
+        fs.rmdirSync(path);
+    }
+};
+
+function renderPdf(username, companyCode, callback) {
+    const compiledFunction = pug.compileFile('server/views/index.pug');
+    an.rpt(username, companyCode, (err, rows) => {
+		
+        var html = compiledFunction({ rows });
+        let filename = username;
+        if (username.split('@').length > 0)
+            filename = username.split('@')[0] + ".pdf";
+        setTimeout(() => {
+            var options = {
+                format: 'Letter',
+                border: {
+                    "top": "1.5cm",            // default is 0, units: mm, cm, in, px
+                    "right": "1.5cm",
+                    "bottom": "1.5cm",
+                    "left": "1.5cm"
+                }
+            };
+            pdf.create(html, options).toFile('server/views/pdf/' + filename, function (err, res) {
+                if (err) return console.log(err);
+                callback('done');
+            });
+        }, 1000);
+    })
+}
 
 module.exports = router;

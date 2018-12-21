@@ -28,9 +28,9 @@ export class EditorComponent implements OnInit {
   deleteConfirm: boolean = false;
   dataTobeDelete: Question = new Question();
   idxTobeDelete: number = undefined;
-
+  currentUser:string = "";
   listQuestion: Array<Question> = new Array<Question>();
-
+  reportSend:boolean = false;
   constructor(private router: Router, private xhrService: XhrserviceService) { }
 
   ngOnInit() {
@@ -40,6 +40,7 @@ export class EditorComponent implements OnInit {
           this.router.navigate(['/landing']);
         }
       }
+      this.currentUser = r.Username;
     });
     this.xhrService.getAllCompany().subscribe(r => {
       this.listCompany = r;
@@ -58,24 +59,22 @@ export class EditorComponent implements OnInit {
   }
 
   orderParentKid(qs: Array<Question>): Array<Question> {
+    
     let result: Array<Question> = new Array<Question>();
     if (qs.length == 0) return result;
     async.eachSeries(qs, (item, callback) => {
+      console.log(item.OrderDesc);
       if (this.isNumber(item.OrderDesc)) {
         item.ParentQCode = "-";
         result.push(item);
         result = result.concat(qs.filter(f => f.ParentQCode === item.QCode));
         callback(null);
+      }else{
+        callback(null);
       }
     }, err => {
 
     });
-    // qs.forEach(el => {
-    //   if (this.isNumber(el.OrderDesc)) {
-    //     result.push(el);
-    //     result = result.concat(qs.filter(f => f.ParentQCode === el.QCode));
-    //   }
-    // });
     return result;
   }
 
@@ -84,7 +83,9 @@ export class EditorComponent implements OnInit {
       this.selectedCompany = companyCode;
       this.filteredCompany = new Array<Company>();
       this.xhrService.getAllQuestions(this.selectedCompany).subscribe(r => {
+        
         this.listQuestion = this.orderParentKid(r);
+        console.log(this.listQuestion);
         if (this.listQuestion.length === 0) {
           this.listQuestion.push(new Question());
         }
@@ -176,6 +177,12 @@ export class EditorComponent implements OnInit {
     });
   }
 
+  export(){
+    this.xhrService.getReport(this.selectedCompany, this.currentUser).subscribe();
+    setTimeout(() => {
+      this.reportSend = false;
+    }, 5000);
+  }
   delCancel() {
     this.dataTobeDelete = new Question();
     this.deleteConfirm = false;

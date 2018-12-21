@@ -9,6 +9,7 @@
         <textarea [(ngModel)]="q.Answer" name="description"></textarea>
       </div>
     </div>
+    <span style="color:red;">{{message}}</span>
   </div>
   <div class="card-footer">
     <button class="btn btn-md btn-primary" (click)="sendAction(1)" *ngIf="!firstQ">Sebelumnya</button>

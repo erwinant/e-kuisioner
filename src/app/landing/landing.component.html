@@ -5,7 +5,7 @@
     <app-panel *ngIf="currentQuestion.QCode" [username]="username" [firstQ]="firstQ" [lastQ]="lastQ" [qsCode]="currentQuestion.QCode"
       (actionEvent)="receiveAction($event)"></app-panel>
     <div *ngIf="!currentQuestion.QCode">
-      <h3>Saat ini data sudah tersedia.</h3>
+      <h3>Saat ini data sudah tersimpan.</h3>
       <h3>Terima kasih atas partisipasi Anda!</h3>
     </div>
   </div>

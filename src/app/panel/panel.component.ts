@@ -16,28 +16,27 @@ export class PanelComponent implements OnInit, OnChanges {
   @Input() lastQ: boolean = false;
   @Input() firstQ: boolean = false;
   @Input() username: string = "";
-  parentNumber:string="";
-  opened:boolean=false;
-
+  parentNumber: string = "";
+  opened: boolean = false;
+  message:string="";
   @Output() actionEvent = new EventEmitter<number>();
   constructor(private xhrService: XhrserviceService) { }
 
   ngOnInit() {
-    
+
   }
 
   fetchData(qsCode: string, username: string) {
     let q = forkJoin(this.xhrService.getQuestion(qsCode),
-                     this.xhrService.getUserAnswers(username),
-                     this.xhrService.getQuestionChild(qsCode));
+      this.xhrService.getUserAnswers(username),
+      this.xhrService.getQuestionChild(qsCode));
     q.subscribe(r => {
-      if(r[2].length>0){
+      if (r[2].length > 0) {
         this.parentNumber = r[0][0].OrderDesc;
         this.qs = leftJoin(r[2], r[1], { key: 'QCode' });
       }
-      else
-      {
-        this.parentNumber ="";
+      else {
+        this.parentNumber = "";
         this.qs = leftJoin(r[0], r[1], { key: 'QCode' });
       }
     });
@@ -46,37 +45,49 @@ export class PanelComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     this.qs = new Array<Question>();
     setTimeout(() => {
-    this.fetchData(changes.qsCode.currentValue, this.username);
-    },500);
+      this.fetchData(changes.qsCode.currentValue, this.username);
+    }, 500);
   }
 
   sendAction(isNext: number) {
     console.log(this.qs);
-    this.qs.forEach(el =>{
-      let answer:Answer = new Answer();
+    this.qs.forEach((el, idx) => {
+      let answer: Answer = new Answer();
       answer.Answer = el.Answer;
       answer.QCode = el.QCode;
       answer.Status = 1;
       answer.Username = this.username;
-      
-      this.xhrService.getAnswer(el.QCode, this.username).subscribe(r =>{
-        
-        if(r) //update
+      if (el.Answer) {
+        if (el.Answer.length <= 30) {
+          this.message = "Pengisian jawaban minimal 30 karakter.";
+          setTimeout(() => {
+            this.message = "";
+          }, 2500);
+          return;
+        }
+      }
+
+      this.xhrService.getAnswer(el.QCode, this.username).subscribe(r => {
+        if (r) //update
         {
           r.Answer = el.Answer;
           this.xhrService.putAnswer(r).subscribe(up => {
-            console.log(up);
+
           });
-        }else{ //insert
+        } else { //insert
           console.log(answer);
           this.xhrService.postAnswer(answer).subscribe(add => {
-            console.log("add");
+
           });
         }
       })
+
+      if (this.qs.length - 1 === idx) {
+        this.actionEvent.emit(isNext);
+      }
     })
-    
-    this.actionEvent.emit(isNext);
+
+
   }
 
 }

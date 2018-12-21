@@ -1,0 +1,74 @@
+html
+  head
+    title Report
+    style.
+      body{
+      font-family:Arial !important;
+      }
+      body img{
+        float:right;
+      }
+      h3{
+      padding:2 !important;
+      margin:2 !important;
+      }
+      .titleapps{
+      padding:2 !important;
+      margin:2 !important;
+      }
+      h5{
+      padding:2 !important;
+      margin:2px 2px 15px 2px !important;
+      color:#5d5d5d;
+      }
+      #container{
+        margin-top:40px;
+      }
+      .each-data{
+      border-bottom:1px #ccc solid;
+      }
+      .data-number{
+      font-size:23px;
+      font-weight:bold;
+      width:42px;
+      background: linear-gradient(to right, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%);
+      }
+      .data-question{
+      font-size:12px;
+      font-weight:bold;
+      padding:2px;
+      width:100%;
+      background: linear-gradient(to right, #BAD8E0 0%,rgba(255,255,255,1) 100%);
+      line-height:18px;
+      }
+      .data-answer{
+      font-size:12px;
+      padding:2px;
+      width:100%;
+      line-height:18px;
+      background: linear-gradient(to right, #dbffb7 0%,rgba(255,255,255,1) 100%);
+      min-height:20px;
+      }
+      .titleapps{
+        font-size:12px;
+        font-style:italic;
+        color:#8ddb3f;
+      }
+  body
+    img(src='file:///D:/RnD/e-kuisioner/server/views/Logo-Experd.png')
+    h3 #{rows[0].CompanyCode}
+      span.titleapps ECQ Result
+    h5 #{rows[0].Username}
+    #container
+    mixin each(data)
+      .each-data
+        table
+          tbody
+            tr
+              td.data-number #{data.OrderDesc}
+              td
+                .data-question #{data.QText}
+                .data-answer #{data.Answer}
+    for item in rows
+      +each(item)
+      

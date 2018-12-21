@@ -59,3 +59,15 @@ exports.deleteAnswer = function (key1, key2, done) {
         })
     })
 }
+
+exports.rpt = function (key1, key2, done) {
+    var values = [key1, key2]
+    db.get(db.trx, function (err, connection) {
+        if (err) return done('Database problem')
+        connection.query('CALL sp_Rpt(?,?)', values, function (err, result) {
+            connection.release();
+            if (err) return done(err)
+            done(null, result[0])
+        })
+    })
+}
