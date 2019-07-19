@@ -5,6 +5,7 @@ import { forkJoin, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import * as async from 'async';
 import { templateJitUrl } from '@angular/compiler';
+import { ExcelService } from '../service/excel.service';
 
 @Component({
   selector: 'app-editor',
@@ -23,15 +24,19 @@ export class EditorComponent implements OnInit {
   showSuccess: boolean = false;
   showError: boolean = false;
   copyMode: boolean = false;
+  showCheckPerson: boolean = false;
+  checkResult: string = "";
   copyError: string = "Existing data target will replace!";
   duplicateNumber: string = "";
   deleteConfirm: boolean = false;
   dataTobeDelete: Question = new Question();
   idxTobeDelete: number = undefined;
-  currentUser:string = "";
+  currentUser: string = "";
   listQuestion: Array<Question> = new Array<Question>();
-  reportSend:boolean = false;
-  constructor(private router: Router, private xhrService: XhrserviceService) { }
+  reportSend: boolean = false;
+  emailToExp: string = "";
+  checkPersonMail: string = "";
+  constructor(public excelService:ExcelService,private router: Router, private xhrService: XhrserviceService) { }
 
   ngOnInit() {
     this.xhrService.getUser(localStorage.getItem("currentUser")).subscribe(r => {
@@ -59,7 +64,7 @@ export class EditorComponent implements OnInit {
   }
 
   orderParentKid(qs: Array<Question>): Array<Question> {
-    
+
     let result: Array<Question> = new Array<Question>();
     if (qs.length == 0) return result;
     async.eachSeries(qs, (item, callback) => {
@@ -69,7 +74,7 @@ export class EditorComponent implements OnInit {
         result.push(item);
         result = result.concat(qs.filter(f => f.ParentQCode === item.QCode));
         callback(null);
-      }else{
+      } else {
         callback(null);
       }
     }, err => {
@@ -83,9 +88,8 @@ export class EditorComponent implements OnInit {
       this.selectedCompany = companyCode;
       this.filteredCompany = new Array<Company>();
       this.xhrService.getAllQuestions(this.selectedCompany).subscribe(r => {
-        
+
         this.listQuestion = this.orderParentKid(r);
-        console.log(this.listQuestion);
         if (this.listQuestion.length === 0) {
           this.listQuestion.push(new Question());
         }
@@ -122,6 +126,46 @@ export class EditorComponent implements OnInit {
     })
   }
 
+  checkPerson() {
+    if (this.checkPersonMail == "") {
+      return;
+    }
+    this.showCheckPerson = true;
+    this.checkResult = "";
+    this.xhrService.getCheckPerson(this.selectedCompany, this.checkPersonMail).subscribe(res => {
+      if (res) {
+        this.showCheckPerson = true;
+        this.checkResult = "Uid: "+res.Username + " - Terjawab " + res.Terjawab + " dari "+ res.TotalSoal + " soal.";
+        setTimeout(() => {
+          this.checkResult = "";
+          this.showCheckPerson = false;
+        }, 5000);
+      }
+
+    });
+  }
+  viewPerson(){
+    window.open('https://api-exkuisioner.experd.com/api/reportview/'+this.selectedCompany+'/'+this.checkPersonMail);
+  }
+  checkAll() {
+    this.checkResult = "";
+    this.showCheckPerson = true;
+    let objData;
+    this.xhrService.getCheckAll(this.selectedCompany).subscribe(res => {
+      if (res) {
+        objData = res;
+        this.showCheckPerson = true;
+        this.checkResult = "Excel sudah terdownload";
+        setTimeout(() => {
+          this.showCheckPerson = false;
+        }, 5000);
+      }
+
+    },err=>{}
+    ,()=>{
+      this.excelService.exportAsExcelFile(objData,"export_raw");
+    });
+  }
   saveQuestions() {
     this.lock = true;
     if (this.checkDuplicate(this.listQuestion)) {
@@ -177,10 +221,21 @@ export class EditorComponent implements OnInit {
     });
   }
 
-  export(){
+  export() {
     this.xhrService.getReport(this.selectedCompany, this.currentUser).subscribe();
     setTimeout(() => {
       this.reportSend = false;
+    }, 5000);
+  }
+  exportUser() {
+    if (this.emailToExp == "") {
+      return;
+    }
+    this.reportSend = true;
+    this.xhrService.getReportUser(this.selectedCompany, this.currentUser, this.emailToExp).subscribe();
+    setTimeout(() => {
+      this.reportSend = false;
+
     }, 5000);
   }
   delCancel() {

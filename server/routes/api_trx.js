@@ -169,20 +169,32 @@ router.delete('/cp/:key', function (req, res, next) {
     });
 });
 
-router.get('/reportview', function (req, res) {
-    const compiledFunction = pug.compileFile('server/views/index.pug');
-    an.rpt("erwin.ant@gmail.com", "ADMEDIKA", (err, rows) => {
+router.get('/reportview/:key2/:key1', function (req, res) {
+    //const compiledFunction = pug.compileFile('server/views/index.pug');
+    an.rpt(req.params.key1, req.params.key2, (err, rows) => {
         res.render('index', { rows });
     });
 });
 
+router.get('/rpt1/:key1', function (req, res) {
+    
+    an.rpt_pengerjaan_all(req.params.key1, (err, rows) => {
+        res.json(rows);
+    });
+});
 
-router.get('/reports/:key1/:key2', function (req, res) {
+router.get('/rpt2/:key1/:key2', function (req, res) {
+    an.rpt_pengerjaan_username(req.params.key1, req.params.key2, (err, rows) => {
+        res.json(rows);
+    });
+});
+
+
+router.get('/reportperson/:key1/:key2/:key3', function (req, res) {
 
     if (req.params.key1) {
         deletePdfFolder('server/views/pdf');
-        us.getAllUserByCriteria({ CompanyCode: req.params.key1 }, (err1, users) => {
-			
+        us.getAllUserByCriteria({ CompanyCode: req.params.key1, Username: req.params.key3 }, (err1, users) => {
             async.eachSeries(users, (user, callback) => {
                 renderPdf(user.Username, req.params.key1, (msg) => {
                     callback();
@@ -199,25 +211,76 @@ router.get('/reports/:key1/:key2', function (req, res) {
                             password: "Sunter123",
                             host: "smtp.gmail.com",
                             ssl: true,
-							port : 465,
+                            port: 465,
                             timeout: 60000
                         });
 
                         // send the message and get a callback with an error or details of the message that was sent
                         server.send({
-                            text: "Berikut data ECQ Project "+req.params.key1,
+                            text: "Berikut data ECQ Project " + req.params.key1,
                             from: "ECQ Reporter <itsupport@experd.com>",
                             to: req.params.key2,
                             subject: "ECQ Reporter",
                             attachment:
                                 [
-                                    { data: "Berikut data ECQ Project "+req.params.key1, alternative: true },
-                                    { path:"server/views/pdf.zip", type:"application/zip", name:"pdf.zip"}
+                                    { data: "Berikut data ECQ Project " + req.params.key1, alternative: true },
+                                    { path: "server/views/pdf.zip", type: "application/zip", name: "pdf.zip" }
                                 ]
                         }, function (err, message) {
                             //console.log(err || message);
                             if (err) { res.json(err); }
-                            else { res.send("Report telah dikirim ke email "+req.params.key2); }
+                            else { res.send("Report telah dikirim ke email " + req.params.key2); }
+                        });
+                    }
+                });
+
+            });
+        });
+    }
+    else
+        res.send("What are you looking?");
+});
+
+router.get('/reports/:key1/:key2', function (req, res) {
+
+    if (req.params.key1) {
+        deletePdfFolder('server/views/pdf');
+        us.getAllUserByCriteria({ CompanyCode: req.params.key1 }, (err1, users) => {
+            async.eachLimit(users,20, (user, callback) => {
+                renderPdf(user.Username, req.params.key1, (msg) => {
+                    callback();
+                });
+            }, (err) => {
+                var zipFolder = require('zip-folder');
+                zipFolder('server/views/pdf', 'server/views/pdf.zip', (errZip) => {
+                    if (errZip) {
+                        console.log('oh no!', errZip);
+                    } else {
+                        var email = require("emailjs");
+                        var server = email.server.connect({
+                            user: "erwin.ant@experd.com",
+                            password: "Sunter123",
+                            host: "smtp.gmail.com",
+                            ssl: true,
+                            port: 465,
+                            timeout: 60000
+                        });
+
+                        // send the message and get a callback with an error or details of the message that was sent
+                        server.send({
+                            text: "Berikut data ECQ Project " + req.params.key1,
+                            from: "ECQ Reporter <itsupport@experd.com>",
+                            to: req.params.key2,
+                            subject: "ECQ Reporter",
+                            attachment:
+                                [
+                                    { data: "Berikut data ECQ Project " + req.params.key1, alternative: true },
+                                    { path: "server/views/pdf.zip", type: "application/zip", name: "pdf.zip" }
+                                ]
+                        }, function (err, message) {
+                            //console.log(err || message);
+                            if (err) { res.json(err); }
+                            else { res.send("Report telah dikirim ke email " + req.params.key2); }
                         });
                     }
                 });
@@ -246,23 +309,40 @@ function deletePdfFolder(path) {
 function renderPdf(username, companyCode, callback) {
     const compiledFunction = pug.compileFile('server/views/index.pug');
     an.rpt(username, companyCode, (err, rows) => {
-		
+
         var html = compiledFunction({ rows });
-        let filename = username;
-        if (username.split('@').length > 0)
-            filename = username.split('@')[0] + ".pdf";
+        var conversion = require("phantom-html-to-pdf")();
+        var fs = require('fs')
+        let filename = username + ".pdf";
+        // let filename = username;
+        // if (username.split('@').length > 0)
+        //     filename = username.split('@')[0] + ".pdf";
         setTimeout(() => {
-            var options = {
-                format: 'Letter',
-                border: {
-                    "top": "1.5cm",            // default is 0, units: mm, cm, in, px
-                    "right": "1.5cm",
-                    "bottom": "1.5cm",
-                    "left": "1.5cm"
+            //------------------------THIS SECTION IF USE HTML TO PDF-------------------
+            // var options = {
+            //     format: 'Letter',
+            //     border: {
+            //         "top": "1.5cm",            // default is 0, units: mm, cm, in, px
+            //         "right": "1.5cm",
+            //         "bottom": "1.5cm",
+            //         "left": "1.5cm"
+            //     }
+            // };
+            // pdf.create(html, options).toFile('server/views/pdf/' + filename, function (err, res) {
+            //     if (err) return console.log(err);
+            //     callback('done');
+            // });
+            //------------------------THIS END SECTION IF USE HTML TO PDF-------------------
+            conversion({ html: html }, function (err, pdfs) {
+                var dir = 'server/views/pdf';
+
+                if (!fs.existsSync(dir)) {
+                    fs.mkdirSync(dir);
                 }
-            };
-            pdf.create(html, options).toFile('server/views/pdf/' + filename, function (err, res) {
-                if (err) return console.log(err);
+                var output = fs.createWriteStream('server/views/pdf/' + filename)
+                // console.log(pdfs.logs);
+                // console.log(pdfs.numberOfPages);
+                pdfs.stream.pipe(output);
                 callback('done');
             });
         }, 1000);

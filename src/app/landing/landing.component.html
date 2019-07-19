@@ -1,7 +1,7 @@
-<div class="clr-row clr-align-items-center box">
+<div class="clr-row clr-align-items-start box">
   <div class="clr-col-1 clr-col-md-2"></div>
   <div class="clr-col-10 clr-col-md-8">
-    <img src="../../assets/img/Logo-Experd.png" /> <span style="color: #000;font-size:22px;">Questioner</span>
+    <img src="../../assets/img/Logo-Experd.png" /> <span style="color: #000;font-size:22px;">Kuesioner</span>
     <app-panel *ngIf="currentQuestion.QCode" [username]="username" [firstQ]="firstQ" [lastQ]="lastQ" [qsCode]="currentQuestion.QCode"
       (actionEvent)="receiveAction($event)"></app-panel>
     <div *ngIf="!currentQuestion.QCode">

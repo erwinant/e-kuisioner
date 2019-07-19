@@ -6,7 +6,9 @@
       <clr-icon size="33" shape="warning-standard" class="is-solid"></clr-icon> {{errorDirectAccess}}!
     </h1>
     <p *ngIf="errorDirectAccess" class="p1">Please visit <a href="https://assessment.experd.com">https://assessment.experd.com</a></p>
-    <p *ngIf="!errorDirectAccess" class="p1">Anytime when you ready!</p>
+    <p *ngIf="!errorDirectAccess" class="p1" style="font-size: 18px;padding:10px 150px 10px 150px; ">
+        Jawablah pertanyaan-pertanyaan setelah ini secara deskriptif,<br/>sesuai dengan pengalaman dan tingkah laku konkret yang pernah Anda tampilkan dalam situasi kerja, masa studi, dan keterlibatan dalam berbagai organisasi.
+    </p>
     <button *ngIf="!errorDirectAccess" class="btn btn-primary" (click)="sign()">Start </button>
   </div>
 </div>

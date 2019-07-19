@@ -15,7 +15,10 @@ exports.getAllUser = function (done) {
 exports.getAllUserByCriteria = function (User, done) {
     var wh = db.whereCriteriaGenerator(User);
     db.get(db.trx, function (err, connection) {
-        if (err) return done('Database problem')
+        if (err) {
+            console.log(err);
+            return done('Database problem')
+        }
         connection.query("SELECT Id, Status, Username, Password, LastLogin, CompanyCode, IsAdmin FROM Users"+wh, function (err, rows) {
             connection.release();
             if (err) return done(err)

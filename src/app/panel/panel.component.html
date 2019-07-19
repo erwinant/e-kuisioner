@@ -2,8 +2,14 @@
   <div class="card-block">
     <div *ngFor="let q of qs">
       <div class="card-title">
-        <span *ngIf="parentNumber" class="parentnumbering">{{parentNumber}}</span><span class="qnumbering">{{q.OrderDesc}}.
-        </span>{{q.QText}}
+        <div class="clr-row">
+          <div style="width: 5%;">
+            <span *ngIf="parentNumber" class="parentnumbering">{{parentNumber}}</span><span class="qnumbering">{{q.OrderDesc}}.
+            </span>
+          </div>
+          <div [innerHtml]="q.QTextSanitizer" style="width: 95%;">
+          </div>
+        </div>
       </div>
       <div class="card-text">
         <textarea [(ngModel)]="q.Answer" name="description"></textarea>
@@ -16,7 +22,7 @@
     <button class="btn btn-md btn-primary" (click)="sendAction(2)" *ngIf="!lastQ">Selanjutnya</button>
     <button class="btn btn-md btn-success" (click)="sendAction(3)" *ngIf="lastQ">Selesai</button>
   </div>
-  <div class="block" *ngIf="qs.length == 0">
+  <div class="block" *ngIf="qs.length == 0 && loading === 1">
     <div style="text-align: center;">
       <span class="spinner spinner-inline">
         Loading...

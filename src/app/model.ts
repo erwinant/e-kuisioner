@@ -1,3 +1,5 @@
+import { SafeHtml } from "@angular/platform-browser";
+
 export class Answer {
     Id: number;
     Status: number=1;
@@ -16,6 +18,7 @@ export class Question {
     CompanyCode: string;
     Answer:string="";
     FakeParentQCode:string="";
+    QTextSanitizer: SafeHtml;
 }
 
 export class Company {

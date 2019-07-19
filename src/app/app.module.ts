@@ -15,6 +15,8 @@ import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { AnswerfPipe } from './pipes/answerf.pipe';
 import { EditorComponent } from './editor/editor.component';
+import { ExcelService } from './service/excel.service';
+
 
 @NgModule({
   declarations: [
@@ -36,7 +38,7 @@ import { EditorComponent } from './editor/editor.component';
     HttpModule,
     HttpClientModule,
   ],
-  providers: [AuthguardService],
+  providers: [AuthguardService,ExcelService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

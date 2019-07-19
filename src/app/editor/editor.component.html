@@ -27,7 +27,7 @@
   <div class="clr-col-10 content">
     <div class="card">
       <div class="card-header">
-         <img src="../../assets/img/Logo-Experd.png"/>  Questioner Editor
+        <img src="../../assets/img/Logo-Experd.png" /> Questioner Editor
       </div>
       <div class="card-block">
         <div class="cform">
@@ -72,11 +72,31 @@
         </div>
       </div>
       <div class="card-footer">
+
         <button *ngIf="listQuestion.length>0  && !lock" class="btn btn-success" (click)="saveQuestions()">
           <clr-icon shape="floppy"></clr-icon> Save all
+        </button><br /><br />
+        <input clrInput *ngIf="listQuestion.length>0  && !lock" style="width:200px;margin-right: 10px" placeholder="Email to check"
+          name="input" [(ngModel)]="checkPersonMail" />
+        <button *ngIf="listQuestion.length>0  && !lock" class="btn btn-primary" (click)="viewPerson()">
+          <clr-icon shape="eye"></clr-icon> View
         </button>
-        <button *ngIf="listQuestion.length>0  && !lock" class="btn btn-primary" (click)="export();reportSend=true;">
-          <clr-icon shape="export"></clr-icon> Export Report
+        <button *ngIf="listQuestion.length>0  && !lock" class="btn btn-primary" (click)="checkPerson()">
+          <clr-icon shape="check"></clr-icon> Check Person
+        </button>
+        <button *ngIf="listQuestion.length>0  && !lock" class="btn btn-success" (click)="checkAll()">
+          <clr-icon shape="event"></clr-icon> Check All
+        </button>
+        <span *ngIf="showCheckPerson" (click)="showCheckPerson=false;">
+          <clr-icon shape="check"></clr-icon> {{checkResult}}
+        </span>
+        <br />
+        <input clrInput *ngIf="listQuestion.length>0  && !lock" style="width:200px;margin-right: 10px" placeholder="Email to export"
+          name="input" [(ngModel)]="emailToExp" />
+        <button *ngIf="listQuestion.length>0  && !lock" class="btn btn-primary" (click)="exportUser();">
+          <clr-icon shape="export"></clr-icon> Export Person
+        </button><button *ngIf="listQuestion.length>0  && !lock" class="btn btn-success" (click)="export();reportSend=true;">
+          <clr-icon shape="export"></clr-icon> Export All
         </button>
         <span *ngIf="reportSend" (click)="reportSend=false;">
           <clr-icon shape="check"></clr-icon> Report sudah dikirimkan ke email
@@ -99,6 +119,7 @@
     </span>
   </div>
 </div>
+
 
 <clr-modal [(clrModalOpen)]="copyMode">
 

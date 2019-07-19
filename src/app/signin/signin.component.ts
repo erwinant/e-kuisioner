@@ -38,7 +38,7 @@ export class SigninComponent implements OnInit {
       localStorage.setItem("currentUser", params.e);
       this.xhrService.getUser(params.e).subscribe(r => {
         if (r) {
-          localStorage.setItem("currentUserCompany", r.CompanyCode);
+          localStorage.setItem("currentUserCompany", params.c);
           if (r.IsAdmin === 1) {
             this.router.navigate(['/editor']);
           } else {

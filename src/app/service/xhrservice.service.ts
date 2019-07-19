@@ -23,11 +23,35 @@ export class XhrserviceService {
     return this.httpClient.post<Question[]>(url, { CompanyCode: companyCode }, { headers: headers }).pipe(map(res => { return res; }));
   }
 
+  getCheckPerson(projectCode: string,username:string) :any{
+    this.token = localStorage.getItem('currentUser');
+    //const headers = this._headers.append('x-access-token', this.token.token);
+    const headers = this._headers.append('x-access-token', this.token);
+    let url = globalVar.global_api + "/rpt2/"+projectCode+"/"+username;
+    return this.httpClient.get(url,  { headers: headers }).pipe(map(res => { return res; }));
+  }
+  getCheckAll(projectCode: string) {
+    this.token = localStorage.getItem('currentUser');
+    //const headers = this._headers.append('x-access-token', this.token.token);
+    const headers = this._headers.append('x-access-token', this.token);
+    let url = globalVar.global_api + "/rpt1/"+projectCode;
+    return this.httpClient.get(url,  { headers: headers }).pipe(map(res => { return res; }));
+  }
+
+
   getReport(projectCode: string, email:string) {
     this.token = localStorage.getItem('currentUser');
     //const headers = this._headers.append('x-access-token', this.token.token);
     const headers = this._headers.append('x-access-token', this.token);
     let url = globalVar.global_api + "/reports/"+projectCode+"/"+email;
+    return this.httpClient.get(url,  { headers: headers }).pipe(map(res => { return res; }));
+  }
+
+  getReportUser(projectCode: string, email:string, username:string) {
+    this.token = localStorage.getItem('currentUser');
+    //const headers = this._headers.append('x-access-token', this.token.token);
+    const headers = this._headers.append('x-access-token', this.token);
+    let url = globalVar.global_api + "/reportperson/"+projectCode+"/"+email+"/"+username;
     return this.httpClient.get(url,  { headers: headers }).pipe(map(res => { return res; }));
   }
 

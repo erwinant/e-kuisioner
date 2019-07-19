@@ -11,7 +11,7 @@ exports.connect = function (mode, done) {
   state.pool = mysql.createPoolCluster();
   
   state.pool.add('trx', {
-    host: '192.168.1.51',
+    host: '192.168.1.200',
     user: 'root',
     password: 'Bunker123',
     database: trx
