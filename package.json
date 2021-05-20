@@ -39,7 +39,7 @@
     "express": "^4.16.4",
     "express-fileupload": "^1.0.0",
     "express-session": "^1.15.6",
-    "html-pdf": "^2.2.0",
+    "html-pdf": "^3.0.1",
     "http": "0.0.0",
     "jsonwebtoken": "^8.3.0",
     "mysql": "^2.16.0",
